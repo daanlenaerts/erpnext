@@ -192,8 +192,9 @@ def resolve_dunning(doc, state):
 					)
 					outstanding_ps = frappe.get_value(
 						"Payment Schedule", overdue_payment.payment_schedule, "outstanding"
-					)
-					resolve = resolve and (False if (outstanding_ps > 0 and outstanding_inv > 0) else True)
+					)if overdue_payment.payment_schedule else None
+					# Only take outstanding_inv into account if no payment schedule is set in this overdue payment
+					resolve = resolve and (False if ((outstanding_ps is None or outstanding_ps > 0) and outstanding_inv > 0) else True)
 
 				new_status = "Resolved" if resolve else "Unresolved"
 
